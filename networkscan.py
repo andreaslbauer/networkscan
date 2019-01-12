@@ -5,6 +5,7 @@ import socket
 import os
 import paramiko
 
+# port list and base address to scan
 portList = ["5000", "8080", "8081", "8088", "80", "8089"]
 baseAddress = "192.168.0."
 
