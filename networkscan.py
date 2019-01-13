@@ -1,5 +1,7 @@
 #!/usr/bin/python3.6
 
+# python program to scan network and find HTTP servers, pingable servers, ssh accessible servers
+
 import requests
 import socket
 import os
@@ -19,7 +21,7 @@ def createAddressList() :
 
 # attempt to ping an address
 def testPing(address):
-    print(f"\rPinging {address}                                      ", end="")
+    print(f"\rPinging {address}                                         ", end="")
 
     # first try to ping the address
     pingResponse = os.system("ping -c 2 -w 3 " + address + " > /dev/null 2>&1")
