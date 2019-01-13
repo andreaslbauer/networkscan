@@ -1,6 +1,7 @@
 #!/usr/bin/python3.6
 
 # python program to scan network and find HTTP servers, pingable servers, ssh accessible servers
+# source code at https://github.com/andreaslbauer/networkscan/blob/master/networkscan.py
 
 import requests
 import socket
@@ -21,7 +22,7 @@ def createAddressList() :
 
 # attempt to ping an address
 def testPing(address):
-    print(f"\rPinging {address}                                         ", end="")
+    print(f"\rPinging {address}                                            ", end="")
 
     # first try to ping the address
     pingResponse = os.system("ping -c 2 -w 3 " + address + " > /dev/null 2>&1")
@@ -36,12 +37,12 @@ def testPing(address):
 
 # attempt ssh connection
 def testSSH(address):
-    print(f"\rTesting ssh for {address}              ", end="")
+    print(f"\rTesting ssh for {address}                  ", end="")
 
     nbytes = 4096
     command = "hostname"
     username = "pi"
-    password = "raspberry"
+    password = "alex5"
     port = 22
     hostname = address
 
