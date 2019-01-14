@@ -4,11 +4,11 @@ pipeline {
         stage('Build') { 
             agent {
                 docker {
-                    image 'python:2-alpine' 
+                    image 'python:3-alpine'
                 }
             }
             steps {
-                sh 'python -m py_compile networkscan.py' 
+                sh 'python3 -m py_compile networkscan.py'
             }
         }
     }
