@@ -106,7 +106,7 @@ def main() :
         testForHTTP(address)
         testSSH(address)
 
-    print("Scan complete                                          ")
+    print("Scan complete!                                          ")
 
 # run the main function
 main()
