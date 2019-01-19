@@ -42,12 +42,8 @@ def testPing(address):
 def testSSH(address):
     print(f"\rTesting ssh for {address}                  ", end="")
 
-<<<<<<< HEAD
     nbytes = 4096
     command = "hostname && uname -a && uptime && df -h . && ps -elf | grep python | grep -v grep"
-=======
-    command = "hostname"
->>>>>>> master
     username = "pi"
     password = "alex5"
     hostname = address
