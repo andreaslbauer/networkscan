@@ -18,6 +18,8 @@ def createAddressList() :
     for i in range(1, 255):
         addresses.append(baseAddress + str(i))
 
+    #addresses = ["192.168.0.100", "192.168.0.133"]
+
     return addresses
 
 # attempt to ping an address
@@ -40,7 +42,7 @@ def testSSH(address):
     print(f"\rTesting ssh for {address}                  ", end="")
 
     nbytes = 4096
-    command = "hostname"
+    command = "hostname && uname -a && uptime && df -h . && ps -elf | grep python | grep -v grep"
     username = "pi"
     password = "alex5"
     port = 22
@@ -55,7 +57,18 @@ def testSSH(address):
         output = stdout.readlines()
         errors = stderr.readlines()
 
-        print(f"\rssh response at {address}: {output} {errors}")
+        # create single string from output
+        outputStr = ""
+        for line in output:
+            outputStr = outputStr + line
+
+        # create single string from errors
+        errorStr = ""
+        for line in errors:
+            errorStr = errorStr + line
+
+
+        print(f"\rssh response at {address}: \n{outputStr} \n{errorStr}")
 
     except Exception as e:
         pass
@@ -68,7 +81,7 @@ def testSSH(address):
 
 
 # test address for HTTP responses
-def testForHTTP(address):
+def testHTTP(address):
 
     success = False
 
@@ -102,8 +115,9 @@ def main() :
     addresses = createAddressList()
     for address in addresses:
         testPing(address)
-        testForHTTP(address)
         testSSH(address)
+        testHTTP(address)
+
 
     print("Scan complete                                          ")
 
