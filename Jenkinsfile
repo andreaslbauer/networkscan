@@ -1,5 +1,8 @@
+// Jenkinsfile to build networkscan python file and create Docker container
+// Useful information:  https://dzone.com/articles/dockerizing-jenkins-2-setup-and-using-it-along-wit
+
 pipeline {
-    agent none
+    agent any
 
     stages {
         stage('Build') { 
@@ -14,10 +17,8 @@ pipeline {
         }
 
         stage('Build Docker') {
-            node {
-                // build the docker image from the source code using the BUILD_ID parameter in image name
-                sh "docker build -t networkscan-${BUILD_ID} ."
-            }
+            // build the docker image from the source code using the BUILD_ID parameter in image name
+            sh "docker build -t networkscan-${BUILD_ID} ."
         }
     }
 }
