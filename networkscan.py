@@ -2,6 +2,7 @@
 
 # python program to scan network and find HTTP servers, pingable servers, ssh accessible servers
 # source code at https://github.com/andreaslbauer/networkscan/blob/master/networkscan.py
+# Force Jenkins build
 
 import requests
 import socket
@@ -24,7 +25,7 @@ def createAddressList() :
 
 # attempt to ping an address
 def testPing(address):
-    print(f"\rPinging {address}                                            ", end="")
+    print(f"\rPinging {address}                                             ", end="")
 
     # first try to ping the address
     pingResponse = os.system("ping -c 2 -w 3 " + address + " > /dev/null 2>&1")
@@ -41,11 +42,14 @@ def testPing(address):
 def testSSH(address):
     print(f"\rTesting ssh for {address}                  ", end="")
 
+<<<<<<< HEAD
     nbytes = 4096
     command = "hostname && uname -a && uptime && df -h . && ps -elf | grep python | grep -v grep"
+=======
+    command = "hostname"
+>>>>>>> master
     username = "pi"
     password = "alex5"
-    port = 22
     hostname = address
 
     try:
@@ -112,6 +116,8 @@ def testHTTP(address):
 # main program function
 def main() :
     print("Scanning subnet " + baseAddress)
+
+    # create an address list and then iterate through each address and probe for network services
     addresses = createAddressList()
     for address in addresses:
         testPing(address)
@@ -119,7 +125,7 @@ def main() :
         testHTTP(address)
 
 
-    print("Scan complete                                          ")
+    print("Scan complete!                                          ")
 
 # run the main function
 main()
