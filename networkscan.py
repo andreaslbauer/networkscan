@@ -10,7 +10,7 @@ import os
 import paramiko
 
 # port list and base address to scan
-portList = ["5000", "8080", "8081", "8088", "80", "8089"]
+portList = ["5000", "8080", "8081", "8088", "80", "8089", "8100"]
 baseAddress = "192.168.0."
 
 # create list of addresses on 192.168.0 subnet
