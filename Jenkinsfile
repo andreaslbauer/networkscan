@@ -15,8 +15,9 @@ pipeline {
         stage('Build Docker') {
             steps {
                 // build the docker image from the source code using the BUILD_ID parameter in image name
-                //dir("networkscan") {
-                sh "docker build -t networkscan-${BUILD_ID} ."
+                dir("networkscan") {
+                    sh "docker build -t networkscan-${BUILD_ID} ."
+                }
             }
         }
     }
