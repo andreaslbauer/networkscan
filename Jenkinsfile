@@ -1,5 +1,6 @@
 pipeline {
-    agent none 
+    agent none
+
     stages {
         stage('Build') { 
             agent {
@@ -15,9 +16,7 @@ pipeline {
         stage('Build Docker') {
             node {
                 // build the docker image from the source code using the BUILD_ID parameter in image name
-                //dir("networkscan") {
-                    sh "docker build -t networkscan-${BUILD_ID} ."
-                //}
+                sh "docker build -t networkscan-${BUILD_ID} ."
             }
         }
     }
