@@ -16,11 +16,20 @@ pipeline {
             }
         }
 
-        stage('Build Docker') {
+        stage('Build Docker Container') {
             steps {
                 // build the docker image from the source code using the BUILD_ID parameter in image name
-                sh "docker build -t networkscan-${BUILD_ID} ."
+                sh "docker build -t andreaslbauer/networkscan ."
             }
         }
+
+        stage('Move to repository') {
+            steps {
+                // build the docker image from the source code using the BUILD_ID parameter in image name
+                sh "pwd"
+                sh "ls -lag"
+            }
+        }
+
     }
 }
