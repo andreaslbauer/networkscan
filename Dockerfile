@@ -1,5 +1,6 @@
 # start with a python3 base container
-FROM python:3-alpine
+FROM python:3
+MAINTAINER Andreas Bauer <andreaslbauer@gmail.com>
 
 # add python files
 ADD networkscan.py /
