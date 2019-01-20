@@ -6,7 +6,7 @@ pipeline {
 
     environment {
         registry = "andreaslbauer/networkscan"
-        registryCredential = 'dockerhub'
+        registryCredential = 'DockerHub'
         dockerImage = ''
     }
 
