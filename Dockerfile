@@ -1,5 +1,5 @@
 # start with a python3 base container
-FROM python:3
+FROM python:3-alpine
 
 # add python files
 ADD networkscan.py /
