@@ -8,10 +8,22 @@ import requests
 import socket
 import os
 import paramiko
+import time
+import socket
+from requests import get
+
+# logging facility: https://realpython.com/python-logging/
+import logging
 
 # port list and base address to scan
 portList = ["5000", "8080", "8081", "8088", "80", "8089", "8100"]
 baseAddress = "192.168.0."
+interactive = None
+
+# print but only if interactive flag is "on"
+def printIfInteractive (*args, **kwargs):
+    if interactive:
+        print(*args, **kwargs)
 
 # create list of addresses on 192.168.0 subnet
 def createAddressList() :
@@ -25,7 +37,7 @@ def createAddressList() :
 
 # attempt to ping an address
 def testPing(address):
-    print(f"\rPinging {address}                                             ", end="")
+    printIfInteractive(f"\rPinging {address}                                             ", end="")
 
     # first try to ping the address
     pingResponse = os.system("ping -c 2 -w 3 " + address + " > /dev/null 2>&1")
@@ -36,11 +48,11 @@ def testPing(address):
         except Exception as e:
             pass
 
-        print(f"\rPing response from {address} hostname {hostname}: {pingResponse}")
+            printIfInteractive(f"\rPing response from {address} hostname {hostname}: {pingResponse}")
 
 # attempt ssh connection
 def testSSH(address):
-    print(f"\rTesting ssh for {address}                  ", end="")
+    printIfInteractive(f"\rTesting ssh for {address}                  ", end="")
 
     nbytes = 4096
     command = "hostname && uname -a && uptime && df -h . && ps -elf | grep python | grep -v grep"
@@ -67,8 +79,7 @@ def testSSH(address):
         for line in errors:
             errorStr = errorStr + line
 
-
-        print(f"\rssh response at {address}: \n{outputStr} \n{errorStr}")
+            printIfInteractive(f"\rssh response at {address}: \n{outputStr} \n{errorStr}")
 
     except Exception as e:
         pass
@@ -93,7 +104,7 @@ def testHTTP(address):
 
         url = f"http://{address}:{port}"
         try:
-            print(f"\rTesting HTTP get for {url}              ", end="")
+            printIfInteractive(f"\rTesting HTTP get for {url}              ", end="")
             response = requests.get(url, timeout=1)
             hostname = "unknown"
             try:
@@ -101,7 +112,7 @@ def testHTTP(address):
             except Exception as e:
                 pass
 
-            print(f"\rReceived response at {url}: {response.status_code} hostname: {hostname}")
+                printIfInteractive(f"\rReceived response at {url}: {response.status_code} hostname: {hostname}")
             success = True
         except Exception as e:
             pass
@@ -111,7 +122,26 @@ def testHTTP(address):
 
 # main program function
 def main() :
-    print("Scanning subnet " + baseAddress)
+
+    # log start up message
+    logging.info("***************************************************************")
+    logging.info("networkscan Data Collector has started")
+    logging.info("Working directory is %s", os.getcwd())
+
+    try:
+        hostname = socket.gethostname()
+        externalip = get('https://api.ipify.org').text
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 1))  # connect() for UDP doesn't send packets
+        localipaddress = s.getsockname()[0]
+        logging.info("Hostname is %s", hostname)
+        logging.info("Local IP is %s and external IP is %s", localipaddress, externalip)
+
+    except Exception as e:
+        logging.exception("Exception occurred")
+        logging.error("Unable to get network information")
+
+        printIfInteractive("Scanning subnet " + baseAddress)
 
     # create an address list and then iterate through each address and probe for network services
     addresses = createAddressList()
@@ -120,11 +150,23 @@ def main() :
         testSSH(address)
         testHTTP(address)
 
+        printIfInteractive("Scan complete!                                          ")
 
-    print("Scan complete!                                          ")
 
-# run the main function
-main()
+
+# set up the logger
+logging.basicConfig(filename="/var/log/networkscan/networkscan.log", format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
+
+
+if __name__ == '__main__':
+
+    try:
+        main()
+
+    except Exception as e:
+        logging.exception("Exception occurred in main")
+
+    logging.info("networkscan Data Collector has terminated")
 
 
 
