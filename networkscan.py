@@ -5,12 +5,9 @@
 # Force Jenkins build
 
 import requests
-import socket
 import os
 import paramiko
-import time
 import socket
-import json
 from requests import get
 import datetime
 
@@ -21,14 +18,27 @@ import logging
 import pycouchdb
 
 # port list and base address to scan
-portList = ["5000", "8080", "8081", "8088", "80", "8089", "8100"]
-baseAddress = "192.168.0."
+portList = ["5000", "8080", "8081", "8088", "80", "8089", "8100", "5984"]
+baseAddress = ["192.168.0.", "192.168.1."]
 interactive = None
 
 # our couch DB access
 couchDBServerUrl = "http://192.168.0.150:5984/"
 couchDBServer = None
 couchDB = None
+
+# read ssh username and password from file
+sshUsername = ""
+sshPassword = ""
+
+def readSSHUsernamePassword() :
+    file = open("username.txt", "r")
+    line = file.readline()
+    splitLine = line.split()
+    global sshUsername
+    sshUsername = splitLine[0]
+    global sshPassword
+    sshPassword = splitLine[1]
 
 
 # print but only if interactive flag is "on"
@@ -39,8 +49,9 @@ def printIfInteractive (*args, **kwargs):
 # create list of addresses on 192.168.0 subnet
 def createAddressList() :
     addresses = []
-    for i in range(1, 255):
-        addresses.append(baseAddress + str(i))
+    for base in baseAddress:
+        for i in range(1, 255):
+            addresses.append(base + str(i))
 
     #addresses = ["192.168.0.100", "192.168.0.133", "192.168.0.1", "192.168.0.150", "127.0.0.1"]
 
@@ -123,8 +134,8 @@ class networkProber :
         address = self.ipAddress
         printIfInteractive(f"\rTesting ssh for {address}                  ", end="")
 
-        username = "pi"
-        password = "alex5"
+        username = sshUsername
+        password = sshPassword
 
         self.sshResponse_uname = self.sendCmdssh(address, username, password, "uname -a")
         self.sshResponse_uptime = self.sendCmdssh(address, username, password, "uptime")
@@ -215,6 +226,8 @@ def main() :
     # initialize global variable couch DB
     global couchDB
     couchDB = couchDBServer.database("networkscan")
+
+    readSSHUsernamePassword()
 
     try:
         hostname = socket.gethostname()
